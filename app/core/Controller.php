@@ -7,11 +7,11 @@ abstract class Controller {
 	public $model;
 	public $view;
 
-	function __construct()
+	function __construct($type)
 	{
-	    $this->model = new \DefaultModel();
-		$this->view = new View();
+	    $this->model = new Model();
+		$this->view = new View($type);
 	}
-	
-	public function IndexAction($request) {}
+
+	public function IndexAction(Request $request) {}
 }

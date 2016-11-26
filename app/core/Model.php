@@ -2,7 +2,7 @@
 
 namespace Core;
 
-abstract class Model
+class Model
 {
 	public function getData() {}
 }

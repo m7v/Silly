@@ -1,11 +1,18 @@
 <?php
 
 use Core\Controller;
+use Core\Request;
 
 class DefaultController extends Controller
 {
-    public function IndexAction($request)
+    function __construct($type)
+    {
+        parent::__construct($type);
+        $this->model = new DefaultModel();
+    }
+
+    public function IndexAction(Request $request)
 	{
-		$this->view->generate('default_view.php', $this->model->getData());
+		$this->view->{$this->view->type}('default_view.php', $this->model->getData());
 	}
 }

@@ -6,7 +6,7 @@ use Core\App;
 
 $app = new App();
 
-//$app->get('/rubrics', 'RubricsController', ['RubricsModel']);
+//$app->get('/rubrics', 'NotFoundController');
 //$app->get('/vacancies', 'VacanciesController', ['VacanciesModel']);
 
 $app->run();

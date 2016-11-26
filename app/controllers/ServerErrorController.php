@@ -1,11 +1,12 @@
 <?php
 
 use Core\Controller;
+use Core\Request;
 
 class ServerErrorController extends Controller
 {
-    public function IndexAction($request)
+    public function IndexAction(Request $request)
     {
-        $this->view->generate('500_view.php');
+        $this->view->html('500_view.php');
     }
 }

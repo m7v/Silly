@@ -8,16 +8,14 @@ class App
     private $modelNames = [];
     private $controllerName;
     private $actionName;
-    private $host;
-    private $router;
     private $request;
-    private $method;
+    private $router;
+    private $type;
 
     public function __construct()
     {
-        $this->request = $_SERVER['REQUEST_URI'];
-        $this->method = strtolower($_SERVER['REQUEST_METHOD']);
-        $this->host = 'http://' . $_SERVER['HTTP_HOST'] . '/';
+        $this->request = new Request();
+        $this->router = new Router($this->request);
     }
 
     private function defineModel()
@@ -27,7 +25,7 @@ class App
                 $model_file = $modelName . '.php';
                 $model_path = "app/models/" . $model_file;
                 if (file_exists($model_path)) {
-                    include "app/models/" . $model_file;
+                    require_once "app/models/" . $model_file;
                 } else {
                     throw new RouterException('Missing Model File');
                 }
@@ -40,15 +38,15 @@ class App
         $controller_file = $this->controllerName . '.php';
         $controller_path = "app/controllers/" . $controller_file;
         if (file_exists($controller_path)) {
-            include "app/controllers/" . $controller_file;
+            require_once "app/controllers/" . $controller_file;
         } else {
             throw new RouterException('Missing Controller File');
         }
     }
 
-    public function get($pattern, $controller, $model = [], $action = 'IndexAction')
+    public function get($pattern, $controller, $model = [], $action = 'IndexAction', $type = 'html')
     {
-        Router::registerNewRoute($this->method, $pattern, $controller, $action, $model);
+        $this->router->registerNewRoute($this->request->method, $pattern, $controller, $action, $model, $type);
     }
 
     public function run()
@@ -67,12 +65,11 @@ class App
 
     private function buildRoute()
     {
-        $this->router = Router::$paths;
-
-        if (!empty($this->router[$this->method][$this->request])) {
-            $this->controllerName = $this->router[$this->method][$this->request]['controller'];
-            $this->actionName = $this->router[$this->method][$this->request]['action'];
-            $this->modelNames = $this->router[$this->method][$this->request]['model'];
+        if (!empty($this->router->existsPath())) {
+            $this->controllerName = $this->router->getController();
+            $this->actionName = $this->router->getAction();
+            $this->modelNames = $this->router->getModel();
+            $this->type = $this->router->getType();
         } else {
             throw new RouterException('Missing Route');
         }
@@ -80,27 +77,27 @@ class App
 
     private function process()
     {
-        $controller = new $this->controllerName;
+        $controller = new $this->controllerName($this->type);
         $action = $this->actionName;
 
-        if (method_exists($controller, $action)) {
+        if (method_exists($controller, $this->actionName)) {
             $controller->$action($this->request);
         } else {
             throw new RouterException("Missing Controller's Action");
         }
     }
 
-    public function ErrorPage404()
+    private function ErrorPage404()
     {
         header('HTTP/1.1 404 Not Found');
         header("Status: 404 Not Found");
-        header('Location:' . $this->host . 'NotFound');
+        header('Location:' . $this->request->host . '404');
     }
 
-    public function ErrorPage500()
+    private function ErrorPage500()
     {
         header('HTTP/1.1 500 Internal Server Error');
         header("Status: 500 Internal Server Error");
-        header('Location:' . $this->host . 'ServerError');
+        header('Location:' . $this->request->host . '500');
     }
 }

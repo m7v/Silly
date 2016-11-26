@@ -1,11 +1,12 @@
 <?php
 
 use Core\Controller;
+use Core\Request;
 
 class NotFoundController extends Controller
 {
-    public function IndexAction($request)
+    public function IndexAction(Request $request)
 	{
-		$this->view->generate('404_view.php');
+		$this->view->{$this->view->type}('404_view.php');
 	}
 }
