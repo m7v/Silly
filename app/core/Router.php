@@ -10,13 +10,9 @@ namespace Core;
 
 class Router
 {
-    private $request;
-
     private $paths;
 
-    public function __construct(Request $request) {
-        $this->request = $request;
-
+    public function __construct() {
         $default_route = [
             'controller' => 'DefaultController',
             'model' => ['DefaultModel'],
@@ -27,12 +23,12 @@ class Router
         $this->paths = [
             'get' => [
                 '/' => $default_route,
-                '/404' => $default_route + [
+                '/404' => [
                         'controller' => 'NotFoundController',
-                    ],
-                '/500' => $default_route + [
+                    ] + $default_route,
+                '/500' => [
                         'controller' => 'ServerErrorController',
-                    ]
+                    ] + $default_route
             ]
         ];
     }
@@ -46,31 +42,31 @@ class Router
         ];
     }
 
-    public function existsPath() {
-        return !empty($this->paths[$this->request->method][$this->request->uri]);
+    public function existsPath(Request $request) {
+        return !empty($this->paths[$request->method][$request->uri]);
     }
 
-    public function getController() {
-        return !empty($this->paths[$this->request->method][$this->request->uri]['controller'])
-            ? $this->paths[$this->request->method][$this->request->uri]['controller']
+    public function getController(Request $request) {
+        return !empty($this->paths[$request->method][$request->uri]['controller'])
+            ? $this->paths[$request->method][$request->uri]['controller']
             : FALSE;
     }
 
-    public function getAction() {
-        return !empty($this->paths[$this->request->method][$this->request->uri]['action'])
-            ? $this->paths[$this->request->method][$this->request->uri]['action']
+    public function getAction(Request $request) {
+        return !empty($this->paths[$request->method][$request->uri]['action'])
+            ? $this->paths[$request->method][$request->uri]['action']
             : FALSE;
     }
 
-    public function getModel() {
-        return !empty($this->paths[$this->request->method][$this->request->uri]['model'])
-            ? $this->paths[$this->request->method][$this->request->uri]['model']
+    public function getModel(Request $request) {
+        return !empty($this->paths[$request->method][$request->uri]['model'])
+            ? $this->paths[$request->method][$request->uri]['model']
             : FALSE;
     }
 
-    public function getType() {
-        return !empty($this->paths[$this->request->method][$this->request->uri]['type'])
-            ? $this->paths[$this->request->method][$this->request->uri]['type']
+    public function getType(Request $request) {
+        return !empty($this->paths[$request->method][$request->uri]['type'])
+            ? $this->paths[$request->method][$request->uri]['type']
             : FALSE;
     }
 }
