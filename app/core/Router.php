@@ -16,8 +16,7 @@ class Router
         $default_route = [
             'controller' => 'DefaultController',
             'model' => ['DefaultModel'],
-            'action' => 'IndexAction',
-            'type' => 'html'
+            'action' => 'IndexAction'
         ];
 
         $this->paths = [
@@ -33,12 +32,11 @@ class Router
         ];
     }
 
-    public function registerNewRoute($method, $pattern, $controller, $action = 'IndexAction', $model = [], $type = 'html') {
+    public function registerNewRoute($method, $pattern, $controller, $action = 'IndexAction', $model = []) {
         $this->paths[$method][$pattern] = [
             'controller' => $controller,
             'action' => $action,
             'model' => $model,
-            'type' => $type,
         ];
     }
 

@@ -7,10 +7,10 @@ abstract class Controller {
 	public $model;
 	public $view;
 
-	function __construct($type)
+	function __construct()
 	{
 	    $this->model = new Model();
-		$this->view = new View($type);
+		$this->view = new View();
 	}
 
 	public function IndexAction(Request $request) {}

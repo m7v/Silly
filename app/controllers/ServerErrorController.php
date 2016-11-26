@@ -7,6 +7,10 @@ class ServerErrorController extends Controller
 {
     public function IndexAction(Request $request)
     {
-        $this->view->html('500_view.php');
+        $this->view->generate(
+            $request,
+            '500_view.php',
+            ["code" => 500, "status" => "InternalServerError"]
+        );
     }
 }

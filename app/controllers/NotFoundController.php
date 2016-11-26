@@ -7,6 +7,10 @@ class NotFoundController extends Controller
 {
     public function IndexAction(Request $request)
 	{
-		$this->view->{$this->view->type}('404_view.php');
+		$this->view->generate(
+		    $request,
+            '404_view.php',
+            ["code" => 404, "status" => "NotFound"]
+        );
 	}
 }

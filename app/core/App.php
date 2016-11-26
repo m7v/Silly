@@ -26,9 +26,9 @@ class App
         $this->type = $this->router->getType($request);
     }
 
-    public function get($pattern, $controller, $model = [], $action = 'IndexAction', $type = 'html')
+    public function get($pattern, $controller, $model = [], $action = 'IndexAction')
     {
-        $this->router->registerNewRoute($this->request->method, $pattern, $controller, $action, $model, $type);
+        $this->router->registerNewRoute($this->request->method, $pattern, $controller, $action, $model);
     }
 
     public function run()
@@ -54,7 +54,7 @@ class App
 
     private function process()
     {
-        $controller = new $this->controllerName($this->type);
+        $controller = new $this->controllerName();
         $action = $this->actionName;
 
         if (method_exists($controller, $this->actionName)) {
@@ -69,7 +69,7 @@ class App
         header('HTTP/1.1 '.$code.' Not Found');
         header("Status: '.$code.' Not Found");
         $this->request->uri = '/'.$code;
-        $this->request->get = 'get';
+        $this->request->method = 'get';
         $this->updateController($this->request);
         (new $this->controllerName($this->type))->{$this->actionName}($this->request);
     }

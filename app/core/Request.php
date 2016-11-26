@@ -17,14 +17,11 @@ class Request
 
     public function __construct()
     {
-        $this->uri = $_SERVER['REQUEST_URI'];
+        $path = explode('?', $_SERVER['REQUEST_URI']);
+        $this->uri = $path[0];
         $this->get = $_GET;
         $this->post = $_POST;
         $this->host = 'http://' . $_SERVER['HTTP_HOST'] . '/';
         $this->method = strtolower($_SERVER['REQUEST_METHOD']);
-    }
-
-    public function getInstance() {
-        return $this;
     }
 }

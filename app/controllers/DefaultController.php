@@ -5,14 +5,18 @@ use Core\Request;
 
 class DefaultController extends Controller
 {
-    function __construct($type)
+    function __construct()
     {
-        parent::__construct($type);
+        parent::__construct();
         $this->model = new DefaultModel();
     }
 
     public function IndexAction(Request $request)
 	{
-		$this->view->{$this->view->type}('default_view.php', $this->model->getData());
+		$this->view->generate(
+		    $request,
+            'default_view.php',
+            $this->model->getData()
+        );
 	}
 }
