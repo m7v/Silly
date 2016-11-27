@@ -5,16 +5,16 @@ namespace Core;
 class App
 {
 
-    private $modelNames = [];
     private $controllerName;
     private $actionName;
     private $request;
+    private $response;
     private $router;
-    private $type;
 
     public function __construct()
     {
         $this->request = new Request();
+        $this->response = new Response();
         $this->router = new Router();
     }
 
@@ -22,13 +22,11 @@ class App
     {
         $this->controllerName = $this->router->getController($request);
         $this->actionName = $this->router->getAction($request);
-        $this->modelNames = $this->router->getModel($request);
-        $this->type = $this->router->getType($request);
     }
 
-    public function get($pattern, $controller, $model = [], $action = 'IndexAction')
+    public function get($pattern, $controller, $action = 'IndexAction')
     {
-        $this->router->registerNewRoute($this->request->method, $pattern, $controller, $action, $model);
+        $this->router->registerNewRoute($this->request->method, $pattern, $controller, $action);
     }
 
     public function run()
@@ -41,6 +39,7 @@ class App
         } catch (\Exception $e) {
             $this->ErrorPage(500);
         }
+        $this->response->render();
     }
 
     private function buildRoute()
@@ -58,7 +57,7 @@ class App
         $action = $this->actionName;
 
         if (method_exists($controller, $this->actionName)) {
-            $controller->$action($this->request);
+            $controller->$action($this->request, $this->response);
         } else {
             throw new RouterException("Missing Controller's Action");
         }
@@ -66,11 +65,11 @@ class App
 
     private function ErrorPage($code)
     {
-        header('HTTP/1.1 '.$code.' Not Found');
-        header("Status: '.$code.' Not Found");
+        $this->response->setHeaders('HTTP/1.1 '.$code.' Not Found');
+        $this->response->setHeaders('Status: '.$code.' Not Found');
         $this->request->uri = '/'.$code;
         $this->request->method = 'get';
         $this->updateController($this->request);
-        (new $this->controllerName($this->type))->{$this->actionName}($this->request);
+        (new $this->controllerName())->{$this->actionName}($this->request, $this->response);
     }
 }

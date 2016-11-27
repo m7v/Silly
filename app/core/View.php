@@ -6,38 +6,57 @@ class View
 {
     const DEFINED_TYPES = ['json', 'html'];
 
-    static protected $template_view = 'default_view.php';
+    private $templates;
 
     public $type;
+
+    static protected $template_view = 'default_view';
+
+    public function __construct()
+    {
+        $this->templates = 'app/views/';
+    }
 
     public function checkType($type)
     {
         return in_array($type, self::DEFINED_TYPES);
     }
 
-    public function generate(Request $request, $content_view, $data = []) {
-        if ($this->checkType($request->get['_format'])) {
-            $this->{$request->get['_format']}($data);
+    public function render($content_view, $values) {
+        $file = $this->templates . $content_view . '.php';
+        if (!file_exists($file)) {
+            throw new \Exception("Error loading template file ($file).");
+        }
+        $output = file_get_contents($file);
+
+        foreach ($values as $key => $value) {
+            $tagToReplace = "[@$key]";
+            $output = str_replace($tagToReplace, $value, $output);
+        }
+
+        return $output;
+    }
+
+    public function generate(Request $request, Response $response, $content_view, $data = []) {
+        if (!empty($request->get['_format']) && !empty($this->checkType($request->get['_format']))) {
+            $this->{$request->get['_format']}($response, $data);
         }
         else {
-            $this->html($content_view, $data);
+            $content_view = $content_view ?: self::$template_view;
+            $body = $this->render($content_view, $data);
+            $this->html($response, $body);
         }
     }
 
-    public function html($content_view = NULL, $data = [])
+    public function html(Response $response, $body)
     {
-        $content_view = $content_view ?: self::$template_view;
-
-        if (is_array($data)) {
-            extract($data);
-        }
-        header('Content-Type: text/html; charset=UTF-8');
-        require_once 'app/views/' . $content_view;
+        $response->setHeaders('Content-Type: text/html; charset=UTF-8');
+        $response->setBody($body);
     }
 
-    public function json($data = [])
+    public function json(Response $response, $data = [])
     {
-        header('Content-Type: application/json');
-        print json_encode($data);
+        $response->setHeaders('Content-Type: application/json');
+        $response->setBody(json_encode($data));
     }
 }

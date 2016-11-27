@@ -13,5 +13,5 @@ abstract class Controller {
 		$this->view = new View();
 	}
 
-	public function IndexAction(Request $request) {}
+	public function IndexAction(Request $request, Response $response) {}
 }

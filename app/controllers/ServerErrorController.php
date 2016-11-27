@@ -2,14 +2,16 @@
 
 use Core\Controller;
 use Core\Request;
+use Core\Response;
 
 class ServerErrorController extends Controller
 {
-    public function IndexAction(Request $request)
+    public function IndexAction(Request $request, Response $response)
     {
         $this->view->generate(
             $request,
-            '500_view.php',
+            $response,
+            '500_view',
             ["code" => 500, "status" => "InternalServerError"]
         );
     }

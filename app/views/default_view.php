@@ -1,4 +1,9 @@
-<h1><?php print $title; ?></h1>
+<h1>[@title]</h1>
 <p>
-    <?php print $greeting; ?>
+    [@greeting]
 </p>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/rubrics">Rubrics</a></li>
+    <li><a href="/vacancies">Vacancies</a></li>
+</ul>

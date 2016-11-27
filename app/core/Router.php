@@ -15,7 +15,6 @@ class Router
     public function __construct() {
         $default_route = [
             'controller' => 'DefaultController',
-            'model' => ['DefaultModel'],
             'action' => 'IndexAction'
         ];
 
@@ -32,11 +31,10 @@ class Router
         ];
     }
 
-    public function registerNewRoute($method, $pattern, $controller, $action = 'IndexAction', $model = []) {
+    public function registerNewRoute($method, $pattern, $controller, $action = 'IndexAction') {
         $this->paths[$method][$pattern] = [
             'controller' => $controller,
             'action' => $action,
-            'model' => $model,
         ];
     }
 
@@ -53,18 +51,6 @@ class Router
     public function getAction(Request $request) {
         return !empty($this->paths[$request->method][$request->uri]['action'])
             ? $this->paths[$request->method][$request->uri]['action']
-            : FALSE;
-    }
-
-    public function getModel(Request $request) {
-        return !empty($this->paths[$request->method][$request->uri]['model'])
-            ? $this->paths[$request->method][$request->uri]['model']
-            : FALSE;
-    }
-
-    public function getType(Request $request) {
-        return !empty($this->paths[$request->method][$request->uri]['type'])
-            ? $this->paths[$request->method][$request->uri]['type']
             : FALSE;
     }
 }

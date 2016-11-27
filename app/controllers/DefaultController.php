@@ -2,6 +2,7 @@
 
 use Core\Controller;
 use Core\Request;
+use Core\Response;
 
 class DefaultController extends Controller
 {
@@ -11,11 +12,12 @@ class DefaultController extends Controller
         $this->model = new DefaultModel();
     }
 
-    public function IndexAction(Request $request)
+    public function IndexAction(Request $request, Response $response)
 	{
 		$this->view->generate(
 		    $request,
-            'default_view.php',
+            $response,
+            'default_view',
             $this->model->getData()
         );
 	}
