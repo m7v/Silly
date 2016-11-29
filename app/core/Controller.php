@@ -1,17 +1,17 @@
 <?php
 
-namespace Core;
+    namespace Core;
 
-abstract class Controller {
-	
-	public $model;
-	public $view;
+    abstract class Controller {
 
-	function __construct()
-	{
-	    $this->model = new Model();
-		$this->view = new View();
-	}
+        public $model;
+        public $view;
 
-	public function IndexAction(Request $request, Response $response) {}
-}
+        function __construct()
+        {
+            $this->model = new Model();
+            $this->view = new View();
+        }
+
+        public function IndexAction(Request $request, Response $response) {}
+    }
