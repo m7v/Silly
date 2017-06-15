@@ -1,12 +1,12 @@
 ﻿<?php
 
-require_once 'app/bootstrap.php';
+    require_once 'app/bootstrap.php';
 
-use Core\App;
+    use Core\App;
 
-$app = new App();
+    $app = new App();
 
-$app->get('/rubrics', 'RubricController');
-$app->get('/vacancies', 'VacancyController');
+    $app->get('/rubrics', 'RubricController');
+    $app->get('/vacancies', 'VacancyController');
 
-$app->run();
+    $app->run();

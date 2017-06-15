@@ -1,8 +1,8 @@
 <?php
 
-namespace Core;
+    namespace Core;
 
-class RouterException extends \Exception
-{
+    class RouterException extends \Exception
+    {
 
-}
+    }
